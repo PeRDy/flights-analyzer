@@ -1,0 +1,18 @@
+output-format: grouped
+
+strictness: high
+test-warnings: false
+doc-warnings: false
+autodetect: true
+member-warnings: false
+
+ignore-paths:
+  - docs
+  - core/tests
+  - build_scripts
+
+ignore-patterns:
+  - .*\.feature$
+
+pylint:
+  run: false

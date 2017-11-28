@@ -1,0 +1,63 @@
+version: '2'
+services:
+  test:
+    image: knockout-assignment-acceptance:latest
+    depends_on:
+      - kafka
+      - schema-registry
+    links:
+      - kafka
+      - schema-registry
+
+  ## Confluent Stack
+  kafka:
+    image: confluentinc/cp-kafka
+    depends_on:
+      - zookeeper
+    links:
+      - zookeeper
+    ports:
+      - "9092:9002"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:9001"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9002"
+      KAFKA_CREATE_TOPICS: "flights:1:1,passengers_average:1:1,populated_flight:1:1"
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    hostname: zookeeper
+    ports:
+      - "9001:9001"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 9001
+      ZOOKEEPER_TICK_TIME: 2000
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry
+    depends_on:
+      - zookeeper
+      - kafka
+    links:
+      - zookeeper
+      - kafka
+    ports:
+      - "8081:9003"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:9001"
+
+  kafka-rest:
+    image: confluentinc/cp-kafka-rest
+    depends_on:
+      - zookeeper
+      - kafka
+      - schema-registry
+    links:
+      - zookeeper
+      - kafka
+      - schema-registry
+    ports:
+      - "8082:9004"
+    environment:
+      KAFKA_REST_ZOOKEEPER_CONNECT: "zookeeper:9001"
+      KAFKA_REST_HOST_NAME: "kafka-rest"

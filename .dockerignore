@@ -1,0 +1,15 @@
+.git/
+logs/
+tests/acceptance/
+
+docker-compose.yml
+Dockerfile
+make
+README.rst
+.gitignore
+
+.cache
+.coverage
+.idea
+__pycache__
+*.log.*

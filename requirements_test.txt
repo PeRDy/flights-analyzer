@@ -1,0 +1,17 @@
+-r requirements.txt
+
+## Tests
+pytest
+pytest-xdist
+pytest-cov
+coverage
+
+## Utils
+ipython
+ipdb
+
+## Factories
+mixer
+
+## Static Analysis
+prospector

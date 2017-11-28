@@ -1,0 +1,29 @@
+#!/usr/bin/env python3.6
+"""Run script.
+"""
+import shlex
+import sys
+from typing import List
+
+from clinner.command import Type as CommandType, command
+from clinner.run import Main as BaseMain
+
+GAUGE = 'gauge'
+
+
+@command(command_type=CommandType.SHELL)
+def acceptance_tests(*args, **kwargs) -> List[List[str]]:
+    cmd = shlex.split(f'{GAUGE} run')
+    cmd += args
+    return [cmd]
+
+
+class Main(BaseMain):
+    commands = (
+        'acceptance_tests',
+    )
+
+
+if __name__ == '__main__':
+    main = Main()
+    sys.exit(main.run())

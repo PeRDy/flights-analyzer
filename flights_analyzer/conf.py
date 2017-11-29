@@ -1,3 +1,5 @@
+"""Loaded settings module on runtime to conveniently configure it through an environment variable.
+"""
 import os
 from importlib import import_module
 

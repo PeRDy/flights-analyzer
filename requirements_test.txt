@@ -4,6 +4,8 @@
 pytest
 pytest-xdist
 pytest-cov
+pytest-asyncio
+pytest-freezegun
 coverage
 
 ## Utils
@@ -11,7 +13,8 @@ ipython
 ipdb
 
 ## Factories
-mixer
+factory_boy
+pytest-factoryboy
 
 ## Static Analysis
 prospector

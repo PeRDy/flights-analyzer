@@ -1,7 +1,7 @@
 version: '2'
 services:
   test:
-    image: knockout-assignment-acceptance:latest
+    image: flights-analyzer-acceptance:latest
     depends_on:
       - kafka
       - schema-registry
@@ -21,7 +21,7 @@ services:
     environment:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:9001"
       KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9002"
-      KAFKA_CREATE_TOPICS: "flights:1:1,passengers_average:1:1,populated_flight:1:1"
+      KAFKA_CREATE_TOPICS: "flights:1:1,passengers_average:1:1,trend_origin:1:1"
 
   zookeeper:
     image: confluentinc/cp-zookeeper

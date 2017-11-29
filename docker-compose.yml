@@ -2,11 +2,11 @@ version: '2'
 services:
   app:
     user: root
-    image: knockout-assignment:latest
+    image: flights-analyzer:latest
     command: [app]
     volumes:
-      - .:/srv/apps/knockout-assignment/app/
-      - ./logs/knockout-assignment:/srv/apps/knockout-assignment/logs
+      - .:/srv/apps/flights-analyzer/app/
+      - ./logs/flights-analyzer:/srv/apps/flights-analyzer/logs
     depends_on:
       - kafka
     links:
@@ -25,7 +25,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
-      KAFKA_CREATE_TOPICS: "flights:1:1,passengers_average:1:1,populated_flight:1:1"
+      KAFKA_CREATE_TOPICS: "flights:1:1,passengers_average:1:1,trend_origin:1:1"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   zookeeper:

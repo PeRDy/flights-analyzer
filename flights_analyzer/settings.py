@@ -1,3 +1,7 @@
+"""Settings module.
+"""
+import os
+
 __all__ = ['Settings']
 
 
@@ -21,7 +25,7 @@ class Settings:
             'root_file': {
                 'level': 'INFO',
                 'class': 'logging.handlers.TimedRotatingFileHandler',
-                'filename': '/srv/apps/knockout-assignment/logs/root.log',
+                'filename': '/srv/apps/flights-analyzer/logs/root.log',
                 'formatter': 'plain',
                 'when': 'midnight',
                 'backupCount': 30,
@@ -30,7 +34,7 @@ class Settings:
             'base_file': {
                 'level': 'INFO',
                 'class': 'logging.handlers.TimedRotatingFileHandler',
-                'filename': '/srv/apps/knockout-assignment/logs/base.log',
+                'filename': '/srv/apps/flights-analyzer/logs/base.log',
                 'formatter': 'plain',
                 'when': 'midnight',
                 'backupCount': 30,
@@ -38,7 +42,7 @@ class Settings:
             },
         },
         'loggers': {
-            'core': {
+            'tasks': {
                 'handlers': ['console', 'base_file'],
                 'level': 'INFO',
                 'propagate': False,
@@ -68,3 +72,6 @@ class Settings:
             ],
         },
     }
+
+    root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    schemas_path = os.path.join(root_path, 'schemas')

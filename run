@@ -28,7 +28,7 @@ DEFAULT_KAFKA_BOOTSTRAP_SERVER = 'kafka:9002'
 # Commands
 @command(command_type=CommandType.PYTHON)
 def app(*args, **kwargs):
-    from core.flights_task import FlightsTask
+    from tasks.flights import FlightsTask
 
     FlightsTask().run()
 
@@ -123,7 +123,7 @@ class Main(HealthCheckMixin, Main):
     )
 
     def add_arguments(self, parser: argparse.ArgumentParser):
-        parser.add_argument('-s', '--settings', default='knockout_assignment.settings:Settings', help='Settings class')
+        parser.add_argument('-s', '--settings', default='flights_analyzer.settings:Settings', help='Settings class')
 
     def inject_app_settings(self):
         """

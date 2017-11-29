@@ -1,2 +1,10 @@
+# Clinner
 clinner
+
+# Gauge
 getgauge
+
+# Kafka
+aiokafka
+avro-python3
+fastavro

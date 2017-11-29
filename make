@@ -22,7 +22,7 @@ except ImportError:
     from clinner.run import Main as BaseMain
 
 # Constants
-DOCKER_IMAGE = 'knockout-assignment'
+DOCKER_IMAGE = 'flights-analyzer'
 DOCKERFILE = os.path.join(os.path.realpath(os.path.dirname(__file__)), 'Dockerfile')
 DEFAULT_APP = 'app'
 
@@ -76,7 +76,7 @@ def unit_tests(*args, **kwargs):
 def acceptance_tests(*args, **kwargs):
     if kwargs['build']:
         # Build test runner image
-        cmds = [shlex.split('docker build -f tests/acceptance/Dockerfile -t knockout-assignment-acceptance:latest '
+        cmds = [shlex.split('docker build -f tests/acceptance/Dockerfile -t flights-analyzer-acceptance:latest '
                             'tests/acceptance')]
     else:
         # Run tests

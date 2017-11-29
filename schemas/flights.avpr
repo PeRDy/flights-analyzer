@@ -1,0 +1,72 @@
+{
+  "protocol": "Flights",
+  "namespace": "flights.analyzer",
+  "types": [
+    {
+      "type": "enum",
+      "name": "PlaneType",
+      "symbols": [
+        "SMALL",
+        "BIG"
+      ]
+    },
+    {
+      "type": "record",
+      "name": "Flight",
+      "fields": [
+        {
+          "name": "flightNumber",
+          "type": "string"
+        },
+        {
+          "name": "planeType",
+          "type": "flights.analyzer.PlaneType"
+        },
+        {
+          "name": "passengers",
+          "type": "int"
+        },
+        {
+          "name": "landedAt",
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        },
+        {
+          "name": "origin",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "AveragePassengers",
+      "fields": [
+        {
+          "name": "passengers",
+          "type": "int"
+        },
+        {
+          "name": "timestamp",
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "TrendOrigin",
+      "fields": [
+        {
+          "name": "origin",
+          "type": "string"
+        },
+        {
+          "name": "timestamp",
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        }
+      ]
+    }
+  ],
+  "messages": {}
+}

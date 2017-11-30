@@ -33,12 +33,17 @@ def flights_protocol() -> 'avro.protocol.Protocol':
 
 @pytest.fixture
 def flight_schema(flights_protocol: 'avro.protocol.Protocol') -> 'avro.schema.RecordSchema':
-    return flights_protocol.type_map['knockout.assignment.Flight']
+    return flights_protocol.type_map['flights.analyzer.Flight']
 
 
 @pytest.fixture
 def average_passengers_schema(flights_protocol: 'avro.protocol.Protocol') -> 'avro.schema.RecordSchema':
-    return flights_protocol.type_map['knockout.assignment.AveragePassengers']
+    return flights_protocol.type_map['flights.analyzer.AveragePassengers']
+
+
+@pytest.fixture
+def average_trend_origin(flights_protocol: 'avro.protocol.Protocol') -> 'avro.schema.RecordSchema':
+    return flights_protocol.type_map['flights.analyzer.TrendOrigin']
 
 
 @pytest.fixture

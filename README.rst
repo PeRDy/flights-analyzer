@@ -121,14 +121,11 @@ Check producer help::
 Assumptions
 ===========
 * The language is not specified and I feel pretty comfortable with Python, so here it is.
-* Since a script for loading input is requested, I created a command (as part of make file) that creates a Kafka consumer.
-This script reads input from stdin, serialize it with Avro and pushes it into the Kafka topic. Also, instead of reading
-from stdin, a jsonlines file can be specified, and the script will use it as the input.
+* Since a script for loading input is requested, I created a command (as part of make file) that creates a Kafka consumer. This script reads input from stdin, serialize it with Avro and pushes it into the Kafka topic. Also, instead of reading from stdin, a jsonlines file can be specified, and the script will use it as the input.
 * There is a counterpart of previous command for listening a Kafka topic and deserialize messages with Avro.
 * Tests are necessary so I created some examples of unit tests and acceptance tests (using Gauge framework).
 * I used the two letters version of ISO-3166.
-* I increased the frequency of the task that calculates the country where most passengers took a flight to once per
-minute, for testing and visibility purposes. Anyway, this is also commented in the code.
+* I increased the frequency of the task that calculates the country where most passengers took a flight to once per minute, for testing and visibility purposes. Anyway, this is also commented in the code.
 
 Considerations
 ==============
@@ -142,14 +139,7 @@ Considerations
     * Prospector used for lint.
     * Gauge as high level testing framework.
 * I considered two possibles approach for this:
-    * Creating two processes that listen the input topic (based on different cursors or offsets), process it, and
-        generate the corresponding output.
-    * Create three processes: one for listening the input topic, processing data and storing it in a buffer or cache; a
-        second process that wakes up periodically, gets buffered data, process it and pushes the output into a topic.
-* I chose the second approach to do the exercise a bit more realistic, having in mind that a common data processing is a
-    typical use case. Obviously, this approach is harder to implement, because of the need of a caching system to
-    communicate the data between the different processes.
-* Knowing that it's a simple exercise and not a real-world service, I tried to replicate all the architecture needed
-    using low level mechanisms such as concurrency, events, asynchronous tasks and in-memory cache; with the purpose of
-    keeping it self-contained. This kind of services usually needs a proper architecture based on tasks and workers with
-    high scalability factors, as well as a real cache like Redis.
+    * Creating two processes that listen the input topic (based on different cursors or offsets), process it, and generate the corresponding output.
+    * Create three processes: one for listening the input topic, processing data and storing it in a buffer or cache; a second process that wakes up periodically, gets buffered data, process it and pushes the output into a topic.
+* I chose the second approach to do the exercise a bit more realistic, having in mind that a common data processing is a typical use case. Obviously, this approach is harder to implement, because of the need of a caching system to communicate the data between the different processes.
+* Knowing that it's a simple exercise and not a real-world service, I tried to replicate all the architecture needed using low level mechanisms such as concurrency, events, asynchronous tasks and in-memory cache; with the purpose of keeping it self-contained. This kind of services usually needs a proper architecture based on tasks and workers with high scalability factors, as well as a real cache like Redis.

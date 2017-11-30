@@ -6,7 +6,7 @@ Flights Analyzer
 :Status: final
 :Author: José Antonio Perdiguero
 
-    Flights analyzer.
+Flights analyzer.
 
 Getting started
 ===============

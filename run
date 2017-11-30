@@ -4,6 +4,7 @@ common interface to run the application, tests and utils.
 """
 import argparse
 import asyncio
+import fileinput
 import io
 import json
 import os
@@ -62,6 +63,7 @@ def prospector(*args, **kwargs) -> List[List[str]]:
 
 @command(args=((('topic',), {'help': 'Kafka topic'}),
                (('schema',), {'help': 'Avro schema'}),
+               (('-f', '--file'), {'help': 'File to be loaded. In jsonlines format.', 'default': '-'}),
                (('--bootstrap-servers',),
                 {'help': 'Kafka bootstrap servers', 'default': DEFAULT_KAFKA_BOOTSTRAP_SERVER}),),
          parser_opts={'help': 'Command line kafka producer'})
@@ -81,11 +83,10 @@ def kafka_producer(*args, **kwargs):
 
     async def _produce(topic):
         await producer.start()
-        raw_message = input()
         try:
-            while raw_message:
-                await producer.send_and_wait(topic, raw_message)
-                raw_message = input()
+            with fileinput.input(files=[kwargs['file']]) as f:
+                for raw_message in f:
+                    await producer.send_and_wait(topic, raw_message)
         except KeyboardInterrupt:
             pass
         finally:

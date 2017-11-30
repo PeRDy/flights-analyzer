@@ -1,0 +1,5 @@
+{"flightNumber": "foo1", "planeType": "SMALL", "passengers": 50, "landedAt": 129871239, "origin": "us"}
+{"flightNumber": "foo2", "planeType": "SMALL", "passengers": 100, "landedAt": 129871239, "origin": "us"}
+{"flightNumber": "foo3", "planeType": "BIG", "passengers": 150, "landedAt": 129871239, "origin": "es"}
+{"flightNumber": "foo4", "planeType": "BIG", "passengers": 175, "landedAt": 129871239, "origin": "fr"}
+{"flightNumber": "foo5", "planeType": "SMALL", "passengers": 25, "landedAt": 129871239, "origin": "us"}

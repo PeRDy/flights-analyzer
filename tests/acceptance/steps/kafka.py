@@ -47,7 +47,7 @@ async def _consume_messages(consumer, number_messages, timeout):
     await consumer.start()
     try:
         data = await consumer.getmany(max_records=number_messages, timeout_ms=timeout * 1000)
-        messages = [m for _, ms in data.items() for m in ms]
+        messages = [m.value for _, ms in data.items() for m in ms]
     finally:
         await consumer.stop()
 
@@ -76,7 +76,8 @@ def create_kafka_consumer_with_schema_listening_to_topic(schema, protocol, topic
     avro_schema = get_schema(protocol, schema)
     consumer = AIOKafkaConsumer(topic, loop=asyncio.get_event_loop(), group_id='acceptance_tests_group_id',
                                 value_deserializer=partial(deserialize, schema=avro_schema),
-                                bootstrap_servers=os.environ['kafka_bootstrap_servers'])
+                                bootstrap_servers=os.environ['kafka_bootstrap_servers'],
+                                auto_offset_reset='earliest')
 
     DataStoreFactory.scenario_data_store().put('consumer', consumer)
 
@@ -87,9 +88,7 @@ def consume_messages_with_timeout(number_messages, timeout):
     loop = asyncio.get_event_loop()
     messages = loop.run_until_complete(_consume_messages(consumer, int(number_messages), int(timeout)))
 
-    import ipdb; ipdb.set_trace()
-
-    assert len(messages) == int(number_messages)
+    assert len(messages) == int(number_messages), f'{len(messages)} messages found, expected {int(number_messages)}'
 
     DataStoreFactory.scenario_data_store().put('messages', messages)
 
@@ -99,5 +98,5 @@ def asserts_messages_contains(table):
     message_asserts = [dict(zip(table.headers, row)) for row in table]
     messages = DataStoreFactory.scenario_data_store().get('messages')
     for message, asserts in zip(messages, message_asserts):
-        for key, value in asserts:
-            assert message[key] == value
+        for key, value in asserts.items():
+            assert str(message[key]) == value, f'Value "{message[key]}" differs from expected "{value}"'

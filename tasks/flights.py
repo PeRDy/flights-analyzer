@@ -210,10 +210,10 @@ class FlightsTask:
         threading.Thread(target=self.listen_flights, args=(loop,)).start()
 
         # Passengers analyzer
-        schedule.every().second.do(self.send_average_passengers, loop)
+        schedule.every().minute.do(self.send_average_passengers, loop)
 
         # Trend origin analyzer
-        schedule.every().second.do(self.send_trend_origin, loop)
+        schedule.every().minute.do(self.send_trend_origin, loop)
         # It's intended modified to run every minute, to create a visible run flow, as well as test it.
         # The real code is:
         # schedule.every().day.do(self.send_trend_origin)

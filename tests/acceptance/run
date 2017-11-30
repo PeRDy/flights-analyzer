@@ -14,7 +14,7 @@ GAUGE = 'gauge'
 
 @command(command_type=CommandType.SHELL)
 def acceptance_tests(*args, **kwargs) -> List[List[str]]:
-    time.sleep(40)
+    time.sleep(5)
     return [shlex.split(f'{GAUGE} run') + list(args)]
 
 

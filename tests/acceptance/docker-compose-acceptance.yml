@@ -14,9 +14,6 @@ services:
     user: root
     image: flights-analyzer:latest
     command: [app]
-    volumes:
-      - .:/srv/apps/flights-analyzer/app/
-      - ./logs/flights-analyzer:/srv/apps/flights-analyzer/logs
     depends_on:
       - kafka
     links:

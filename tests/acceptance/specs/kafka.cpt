@@ -1,0 +1,10 @@
+# Produce messages using schema <schema> from protocol <protocol> into Kafka topic <topic> <table>
+
+* Create a Kafka producer with schema <schema> from protocol <protocol>
+* Produce messages into topic <topic> <table>
+
+
+# Consume <number_messages> messages using schema <schema> from protocol <protocol> from Kafka topic <topic> with timeout <timeout> seconds
+
+* Create a Kafka consumer with schema <schema> from protocol <protocol> listening to topic <topic>
+* Consume <number_messages> messages with timeout <timeout>

@@ -1,5 +1,6 @@
 """Settings module.
 """
+import logging.config
 import os
 
 __all__ = ['Settings']
@@ -67,7 +68,7 @@ class Settings:
             'BOOTSTRAP_SERVERS': [
                 {
                     'HOST': 'kafka',
-                    'PORT': 9002,
+                    'PORT': 9092,
                 }
             ],
         },
@@ -75,3 +76,7 @@ class Settings:
 
     root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     schemas_path = os.path.join(root_path, 'schemas')
+
+    @classmethod
+    def setup(cls):
+        logging.config.dictConfig(cls.logging)

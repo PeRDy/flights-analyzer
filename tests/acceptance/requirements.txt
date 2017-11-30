@@ -7,4 +7,7 @@ getgauge
 # Kafka
 aiokafka
 avro-python3
-fastavro
+
+# Utilities
+ipdb
+ipython

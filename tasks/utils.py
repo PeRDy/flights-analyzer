@@ -18,7 +18,7 @@ def get_event_loop() -> 'asyncio.BaseEventLoop':
         loop = asyncio.get_event_loop()
     except RuntimeError:
         loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        loop.run_forever()
 
     return loop
 

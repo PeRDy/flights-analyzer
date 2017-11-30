@@ -5,6 +5,7 @@ import shlex
 import sys
 from typing import List
 
+import time
 from clinner.command import Type as CommandType, command
 from clinner.run import Main as BaseMain
 
@@ -13,9 +14,8 @@ GAUGE = 'gauge'
 
 @command(command_type=CommandType.SHELL)
 def acceptance_tests(*args, **kwargs) -> List[List[str]]:
-    cmd = shlex.split(f'{GAUGE} run')
-    cmd += args
-    return [cmd]
+    time.sleep(40)
+    return [shlex.split(f'{GAUGE} run') + list(args)]
 
 
 class Main(BaseMain):

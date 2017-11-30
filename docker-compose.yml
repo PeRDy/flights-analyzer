@@ -6,7 +6,7 @@ services:
     command: [app]
     volumes:
       - .:/srv/apps/flights-analyzer/app/
-      - ./logs/flights-analyzer:/srv/apps/flights-analyzer/logs
+      - ./logs/flights-analyzer:/srv/apps/flights-analyzer/logs/
     depends_on:
       - kafka
     links:
@@ -25,12 +25,11 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
-      KAFKA_CREATE_TOPICS: "flights:1:1,passengers_average:1:1,trend_origin:1:1"
+      KAFKA_CREATE_TOPICS: "flights:1:1,average_passengers:1:1,trend_origin:1:1"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   zookeeper:
     image: confluentinc/cp-zookeeper
-    hostname: zookeeper
     ports:
       - "2181:2181"
     environment:

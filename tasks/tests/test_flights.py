@@ -1,5 +1,5 @@
 from datetime import datetime
-from unittest.mock import call, patch
+from unittest.mock import call, patch, Mock
 
 import factory
 import pytest
@@ -40,7 +40,13 @@ class TestFlightsTask:
     @pytest.mark.asyncio
     @pytest.mark.freeze_time('2017-11-28 06:00:00')
     async def test_listen_flights(self, mock_consumer, flight_1, flight_2, flight_3):
-        mock_consumer.items = [flight_1, flight_2, flight_3]
+        mock_flight_1 = Mock()
+        mock_flight_1.value = flight_1
+        mock_flight_2 = Mock()
+        mock_flight_2.value = flight_2
+        mock_flight_3 = Mock()
+        mock_flight_3.value = flight_3
+        mock_consumer.items = [mock_flight_1, mock_flight_2, mock_flight_3]
 
         task = FlightsTask()
 
@@ -54,7 +60,7 @@ class TestFlightsTask:
     @pytest.mark.freeze_time('2017-11-28 06:00:00')
     async def test_calculate_average_passengers(self, mock_producer, flight_1, flight_2, average_passengers):
         expected_calls = [
-            call(FlightsTask.PASSENGERS_AVERAGE_TOPIC, average_passengers),
+            call(FlightsTask.AVERAGE_PASSENGERS_TOPIC, average_passengers),
         ]
 
         task = FlightsTask()

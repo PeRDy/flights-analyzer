@@ -21,3 +21,4 @@ def load_settings(path):
 
 
 settings = load_settings(os.environ['APP_SETTINGS'])
+settings.setup()

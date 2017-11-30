@@ -4,15 +4,20 @@ common interface to run the application, tests and utils.
 """
 import argparse
 import asyncio
+import io
 import json
 import os
 import shlex
 import sys
+import time
 from typing import List
 
 from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
+from avro.io import BinaryDecoder, BinaryEncoder, DatumReader, DatumWriter
 from clinner.command import Type as CommandType, command
-from clinner.run import HealthCheckMixin, Main
+from clinner.run import Main as BaseMain
+
+from tasks.utils import get_schema
 
 # Binaries
 PYTHON = 'python3.6'
@@ -30,6 +35,7 @@ DEFAULT_KAFKA_BOOTSTRAP_SERVER = 'kafka:9002'
 def app(*args, **kwargs):
     from tasks.flights import FlightsTask
 
+    time.sleep(30)
     FlightsTask().run()
 
 
@@ -55,15 +61,25 @@ def prospector(*args, **kwargs) -> List[List[str]]:
 
 
 @command(args=((('topic',), {'help': 'Kafka topic'}),
+               (('schema',), {'help': 'Avro schema'}),
                (('--bootstrap-servers',),
                 {'help': 'Kafka bootstrap servers', 'default': DEFAULT_KAFKA_BOOTSTRAP_SERVER}),),
          parser_opts={'help': 'Command line kafka producer'})
 def kafka_producer(*args, **kwargs):
     loop = asyncio.get_event_loop()
 
-    async def _produce(topic, asyncio_loop):
-        producer = AIOKafkaProducer(loop=asyncio_loop, bootstrap_servers=kwargs['bootstrap_servers'],
-                                    value_serializer=lambda x: str(x).encode('utf-8'), request_timeout_ms=3000, metadata_max_age_ms=3000)
+    schema = get_schema('flights.avpr', kwargs['schema'])
+
+    def serialize(item):
+        buffer = io.BytesIO()
+        DatumWriter(schema).write(json.loads(item), BinaryEncoder(buffer))
+        buffer.seek(0)
+        return buffer.read()
+
+    producer = AIOKafkaProducer(loop=loop, bootstrap_servers=kwargs['bootstrap_servers'],
+                                value_serializer=serialize, request_timeout_ms=3000, metadata_max_age_ms=3000)
+
+    async def _produce(topic):
         await producer.start()
         raw_message = input()
         try:
@@ -75,10 +91,11 @@ def kafka_producer(*args, **kwargs):
         finally:
             await producer.stop()
 
-    loop.run_until_complete(_produce(kwargs['topic'], loop))
+    loop.run_until_complete(_produce(kwargs['topic']))
 
 
-@command(args=((('topic',), {'help': 'Kafka topic', 'nargs': '+'}),
+@command(args=((('topic',), {'help': 'Kafka topic'}),
+               (('schema',), {'help': 'Avro schema'}),
                (('--bootstrap-servers',),
                 {'help': 'Kafka bootstrap servers', 'default': DEFAULT_KAFKA_BOOTSTRAP_SERVER}),
                (('-g', '--group-id'), {'help': 'Consumer group ID', 'default': 'group_id'})),
@@ -86,9 +103,15 @@ def kafka_producer(*args, **kwargs):
 def kafka_consumer(*args, **kwargs):
     loop = asyncio.get_event_loop()
 
-    async def _consume(topics, asyncio_loop, group_id):
-        consumer = AIOKafkaConsumer(*topics, loop=asyncio_loop, bootstrap_servers=kwargs['bootstrap_servers'],
-                                    group_id=group_id, value_deserializer=str)
+    schema = get_schema('flights.avpr', kwargs['schema'])
+
+    def deserialize(item):
+        return str(DatumReader(schema).read(BinaryDecoder(io.BytesIO(item))))
+
+    consumer = AIOKafkaConsumer(kwargs['topic'], loop=loop, bootstrap_servers=kwargs['bootstrap_servers'],
+                                group_id=kwargs['group_id'], value_deserializer=deserialize)
+
+    async def _consume():
         await consumer.start()
         try:
             async for msg in consumer:
@@ -98,20 +121,11 @@ def kafka_consumer(*args, **kwargs):
         finally:
             consumer.stop()
 
-    loop.run_until_complete(_consume(kwargs['topic'], loop, kwargs['group_id']))
-
-
-@command(command_type=CommandType.SHELL)
-def health_check(*args, **kwargs) -> List[List[str]]:
-    """
-    """
-    hc = ['health_check']
-    hc += args
-    return [hc]
+    loop.run_until_complete(_consume())
 
 
 # Main
-class Main(HealthCheckMixin, Main):
+class Main(BaseMain):
     commands = (
         'app',
         'shell',
@@ -119,26 +133,13 @@ class Main(HealthCheckMixin, Main):
         'prospector',
         'kafka_producer',
         'kafka_consumer',
-        'health_check',
     )
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         parser.add_argument('-s', '--settings', default='flights_analyzer.settings:Settings', help='Settings class')
 
     def inject_app_settings(self):
-        """
-        Injecting own settings.
-        """
         os.environ['APP_SETTINGS'] = self.settings
-        os.environ['HEALTH_CHECK_SETTINGS'] = self.settings
-
-    def health_check(self):
-        """
-        Check for availability of external dependencies, such as the celery broker.
-        :return: True if healthy, False otherwise.
-        """
-        # TODO: Create a HC
-        return True
 
 
 if __name__ == '__main__':
